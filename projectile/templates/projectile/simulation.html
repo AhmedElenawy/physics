@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Mode | Ultimate Superman Course</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #001f3f 0%, #0a1929 50%, #8B0000 100%);
+        }
+
+        .crt {
+            font-family: "Courier New", monospace;
+        }
+
+        .neon-text {
+            text-shadow: 0 0 8px #FBBF24, 0 0 15px #FBBF24;
+        }
+
+        .superman-border {
+            border: 2px solid #DC2626;
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+        }
+
+        /* Dark Mode for Form Inputs */
+        input[type="number"],
+        input[type="text"] {
+            background-color: #111827 !important;
+            color: #fbbf24 !important;
+            border-color: #DC2626 !important;
+        }
+
+        input[type="number"]:focus {
+            outline: none !important;
+            border-color: #ca8a04 !important;
+            box-shadow: 0 0 0 2px rgba(202, 138, 4, 0.2) !important;
+        }
+    </style>
+</head>
+
+<body class="text-white min-h-screen flex flex-col font-sans">
+
+    <header
+        class="bg-gradient-to-r from-red-900 via-blue-900 to-red-900 border-b-4 border-yellow-500 p-4 flex justify-between items-center shadow-2xl">
+        <div class="flex items-center gap-4">
+            <a href="{% url 'projectile:index' %}"
+                class="text-yellow-300 hover:text-yellow-100 font-bold transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Main Menu
+            </a>
+            <h1 class="text-2xl font-bold text-yellow-600 tracking-wider neon-text">🦸 SUPERMAN TRAINING MODE</h1>
+        </div>
+        <div class="flex items-center gap-2">
+            <div
+                class="px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 rounded text-xs text-yellow-300 font-bold">
+                ⚡ READY
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-6 flex-grow flex flex-col lg:flex-row gap-8">
+
+        <div class="w-full lg:w-1/3 flex flex-col gap-6">
+
+            <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg p-6 superman-border shadow-xl">
+                <h2 class="text-yellow-600 text-sm font-bold uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                        </path>
+                    </svg>
+                    ⚡ Flight Parameters
+                </h2>
+
+                <form method="POST" action="" class="space-y-4">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4 text-sm">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    {% for field in form %}
+                    <div>
+                        <label class="block text-yellow-300 text-xs font-bold mb-1 uppercase"
+                            for="{{ field.id_for_label">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <p class="text-red-300 text-xs mt-1">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <button type="submit"
+                        class="w-full bg-yellow-600 hover:bg-yellow-500 text-gray-900 font-bold py-3 px-4 rounded transition shadow-lg flex justify-center items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        🚀 LAUNCH SUPERMAN!
+                    </button>
+                </form>
+            </div>
+
+            <div id="results-panel"
+                class="bg-gradient-to-br from-red-900 to-red-800 rounded-lg p-6 superman-border shadow-2xl {% if not physics_results %}hidden{% endif %}">
+                <h3 class="text-yellow-400 text-sm font-bold uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    🎯 Flight Data
+                </h3>
+
+                <div class="grid grid-cols-1 gap-2 text-sm font-mono">
+                    <div class="flex justify-between border-b border-gray-700 pb-1">
+                        <span class="text-gray-500">Max Height</span>
+                        <span id="res-max-height" class="text-yellow-300 font-bold">{{
+                            physics_results.max_height|floatformat:2 }} m</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-700 pb-1">
+                        <span class="text-gray-500">Total Range</span>
+                        <span id="res-distance" class="text-yellow-300 font-bold">{{ physics_results.range|floatformat:2
+                            }} m</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-700 pb-1">
+                        <span class="text-gray-500">Flight Time</span>
+                        <span id="res-time" class="text-yellow-300 font-bold">{{
+                            physics_results.total_time|floatformat:2 }} s</span>
+                    </div>
+
+                    {% if physics_results %}
+                    <div class="mt-2 pt-2 border-t border-gray-600">
+                        <div class="flex justify-between py-1">
+                            <span class="text-gray-500">Impact Velocity</span>
+                            <span class="text-blue-300">{{ physics_results.impact_velocity|floatformat:2 }} m/s</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-gray-500">Impact Angle</span>
+                            <span class="text-blue-300">{{ physics_results.impact_angle|floatformat:2 }}&deg;</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-2/3 flex flex-col">
+            <div class="bg-white rounded-lg p-1 overflow-hidden relative border border-gray-700 h-[600px] shadow-2xl">
+                <canvas id="simCanvas" class="w-full h-full block"></canvas>
+
+                {% if not simulation_data %}
+                <div
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-gray-50/90 text-gray-400 pointer-events-none z-10">
+                    <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                        </path>
+                    </svg>
+                    <p class="font-bold text-lg text-gray-500">READY FOR INPUT</p>
+                    <p class="text-sm">Enter parameters on the left to initialize.</p>
+                </div>
+                {% else %}
+                <div
+                    class="absolute top-4 left-4 text-xs text-gray-800 pointer-events-none bg-white/80 p-1 rounded border border-gray-300 shadow-sm z-10">
+                    LIVE TRAJECTORY FEED
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </main>
+
+    {% if simulation_data %}
+    <script id="simulation-data" type="application/json">
+        {{ simulation_data|safe }}
+    </script>
+    {% endif %}
+
+    {% load static %}
+    <script src="{% static 'js/projectile.js' %}"></script>
+</body>
+
+</html>
